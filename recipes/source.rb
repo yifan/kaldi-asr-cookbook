@@ -56,9 +56,10 @@ if node[:kaldi_asr][:with_gstreamer]
   end
 end
 
+kaldi_version = node[:kaldi_asr][:kaldi_version]
 ark 'kaldi' do
-  url 'https://github.com/yifan/kaldi/archive/v0.1.0.tar.gz'
-  version '0.1.0'
+  url "https://github.com/yifan/kaldi/archive/v#{kaldi_version}.tar.gz"
+  version "#{kaldi_version}"
   path '/opt'
   home_dir "#{node[:kaldi_asr][:kaldi_root]}"
 end

@@ -30,9 +30,10 @@ include_recipe 'python::virtualenv'
   end
 end
 
+gw_version = node[:kaldi_asr][:gstreamer_worker_version]
 ark 'gstreamer-worker' do
-  url 'https://github.com/yifan/gst-kaldi-nnet2-online/archive/v0.1.0.tar.gz'
-  version '0.1.0'
+  url "https://github.com/yifan/gst-kaldi-nnet2-online/archive/v#{gw_version}.tar.gz"
+  version "#{gw_version}"
   path '/opt'
   home_dir "#{node[:kaldi_asr][:gstreamer_worker_root]}"
 end

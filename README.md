@@ -16,10 +16,10 @@ Ubuntu 14.04
 
 ## Attributes
 
-* `node['kaldi_asr']['kaldi_root']` - KALDI installation directory, default: /opt/kaldi
-* `node['kaldi_asr']['gstreamer_server_root']` - GStreamer server installation directory, default: /opt/kaldi-gstreamer-server
-* `node['kaldi_asr']['gstreamer_server_port']` - GStreamer server port, default: 8888
-* `node['kaldi_asr']['gstreamer_worker_root']` - GStreamer worker installation directory, default: /opt/kaldi-gstreamer-worker
+* `node['kaldi_asr']['kaldi_root']` - KALDI installation directory, default: `/opt/kaldi`
+* `node['kaldi_asr']['gstreamer_server_root']` - GStreamer server installation directory, default: `/opt/kaldi-gstreamer-server`
+* `node['kaldi_asr']['gstreamer_server_port']` - GStreamer server port, default: `8888`
+* `node['kaldi_asr']['gstreamer_worker_root']` - GStreamer worker installation directory, default: `/opt/kaldi-gstreamer-worker`
 * `node['kaldi_asr']['with_gstreamer']` - set `false` to compile KALDI without GStreamer, set `true` for gstreamer recipes
 
 ## Recipes
@@ -32,7 +32,7 @@ Checkout KALDI from my fork on github and compile everything.
 
 ### gstreamer_server
 
-Install my fork of kaldi-gstream-server and start it without `supervisor`
+Install my fork of kaldi-gstream-server and start it with `supervisor`
 
 ### gstreamer_worker
 

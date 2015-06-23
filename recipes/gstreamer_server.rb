@@ -23,9 +23,12 @@ include_recipe 'python::virtualenv'
 include_recipe 'supervisor'
 include_recipe 'ark'
 
+package 'python-gobject'
+
+gs_version = node[:kaldi_asr][:gstreamer_server_version]
 ark 'kaldi-gstreamer-server' do
-  url 'https://github.com/yifan/kaldi-gstreamer-server/archive/v0.1.1.tar.gz'
-  version '0.1.1'
+  url "https://github.com/yifan/kaldi-gstreamer-server/archive/v#{gs_version}.tar.gz"
+  version "#{gs_version}"
   path '/opt'
   home_dir "#{node[:kaldi_asr][:gstreamer_server_root]}"
 end

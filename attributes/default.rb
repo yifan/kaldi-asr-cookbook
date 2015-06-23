@@ -1,9 +1,13 @@
 
+default['kaldi_asr']['kaldi_version'] = '0.1.0'
 default['kaldi_asr']['kaldi_root'] = '/opt/kaldi'
+default['kaldi_asr']['model_dir'] = '/opt/model'
 
+default['kaldi_asr']['gstreamer_server_version'] = '0.1.1'
 default['kaldi_asr']['gstreamer_server_root'] = '/opt/kaldi-gstreamer-server'
 default['kaldi_asr']['gstreamer_server_port'] = '8888'
 
+default['kaldi_asr']['gstreamer_worker_version'] = '0.1.0'
 default['kaldi_asr']['gstreamer_worker_root'] = '/opt/kaldi-gstreamer-worker'
 
 default['kaldi_asr']['with_gstreamer'] = true
