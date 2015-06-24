@@ -33,9 +33,10 @@ end
 gw_version = node[:kaldi_asr][:gstreamer_worker_version]
 ark 'gstreamer-worker' do
   url "https://github.com/yifan/gst-kaldi-nnet2-online/archive/v#{gw_version}.tar.gz"
-  version "#{gw_version}"
+  version gw_version
+  checksum node[:kaldi_asr][:gstreamer_worker_checksum]
   path '/opt'
-  home_dir "#{node[:kaldi_asr][:gstreamer_worker_root]}"
+  home_dir node[:kaldi_asr][:gstreamer_worker_root]
 end
 
 python_virtualenv "#{node[:kaldi_asr][:gstreamer_worker_root]}" do

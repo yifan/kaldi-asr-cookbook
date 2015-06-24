@@ -59,9 +59,10 @@ end
 kaldi_version = node[:kaldi_asr][:kaldi_version]
 ark 'kaldi' do
   url "https://github.com/yifan/kaldi/archive/v#{kaldi_version}.tar.gz"
-  version "#{kaldi_version}"
+  version kaldi_version
+  checksum node[:kaldi_asr][:kaldi_checksum]
   path '/opt'
-  home_dir "#{node[:kaldi_asr][:kaldi_root]}"
+  home_dir node[:kaldi_asr][:kaldi_root]
 end
 
 # fix gfortran library problem with ubuntu 14.04
@@ -82,6 +83,7 @@ bash 'build-kaldi' do
     make
     EOH
   action :run
+  not_if "test -d #{node[:kaldi_asr][:kaldi_root]}/src/lib"
 end
 
 bash 'build-kaldi-gstreamer' do
