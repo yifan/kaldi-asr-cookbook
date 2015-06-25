@@ -30,6 +30,12 @@ directory "#{model_dir}" do
   action :create
 end
 
+output_dir = "#{node[:kaldi_asr][:output_dir]}/english"
+directory "#{output_dir}" do
+  recursive true
+  action :create
+end
+
 tar_extract 'https://qcristore.blob.core.windows.net/public/asr/models/english.tar.gz' do
   target_dir model_dir
   creates "#{model_dir}/conf"
@@ -40,7 +46,7 @@ template "#{model_dir}/model.yaml" do
   local true
   variables ({
     :model_path => model_dir,
-    :output_path => node[:kaldi_asr][:output_dir],
+    :output_path => output_dir,
   })
 end
 
@@ -49,7 +55,7 @@ template "#{model_dir}/conf/ivector_extractor.conf" do
   local true
   variables ({
     :model_path => model_dir,
-    :output_path => node[:kaldi_asr][:output_dir],
+    :output_path => output_dir,
   })
   only_if 
 end
