@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: kaldi-asr
-# Recipe:: gstreamer_english
+# Recipe:: gstreamer_arabic
 # Author:: Yifan Zhang (<yzhang@qf.org.qa>)
 #
 # Copyright (C) 2015 Qatar Computing Research Institute
@@ -24,19 +24,19 @@ include_recipe 'python::virtualenv'
 include_recipe 'supervisor'
 include_recipe 'tar'
 
-model_dir = "#{node[:kaldi_asr][:model_dir]}/english"
+model_dir = "#{node[:kaldi_asr][:model_dir]}/arabic"
 directory "#{model_dir}" do
   recursive true
   action :create
 end
 
-output_dir = "#{node[:kaldi_asr][:output_dir]}/english"
+output_dir = "#{node[:kaldi_asr][:output_dir]}/arabic"
 directory "#{output_dir}" do
   recursive true
   action :create
 end
 
-tar_extract 'https://qcristore.blob.core.windows.net/public/asr/models/english.tar.gz' do
+tar_extract 'https://qcristore.blob.core.windows.net/public/asr/models/arabic.tar.gz' do
   target_dir model_dir
   creates "#{model_dir}/conf"
 end
@@ -64,7 +64,7 @@ virtualenv = node[:kaldi_asr][:gstreamer_server_root]
 gs_root = node[:kaldi_asr][:gstreamer_server_root]
 gs_port = node[:kaldi_asr][:gstreamer_server_port]
 
-supervisor_service 'kaldi-gstreamer-worker-english-supervisor' do
+supervisor_service 'kaldi-gstreamer-worker-arabic-supervisor' do
   action [:enable, :start]
   autostart true
 
