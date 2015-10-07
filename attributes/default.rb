@@ -13,5 +13,9 @@ default['kaldi_asr']['gstreamer_server_port'] = '8888'
 default['kaldi_asr']['gstreamer_worker_version'] = '0.1.0'
 default['kaldi_asr']['gstreamer_worker_checksum'] = '624ab77182c9ac979a221bd79a4dc2fb176724040166a6c8bfcce0e44298c69d'
 default['kaldi_asr']['gstreamer_worker_root'] = '/opt/kaldi-gstreamer-worker'
+default['kaldi_asr']['gstreamer_worker_nthread'] = 4
+
+default['kaldi_asr']['model_name'] = 'test'
+default['kaldi_asr']['model_url'] = 'https://qcristore.blob.core.windows.net/public/asr/models/test_model.tar.gz'
 
 default['kaldi_asr']['with_gstreamer'] = true

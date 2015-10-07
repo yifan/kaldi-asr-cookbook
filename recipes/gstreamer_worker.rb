@@ -20,6 +20,8 @@ include_recipe 'kaldi-asr::source'
 include_recipe 'python'
 include_recipe 'python::pip'
 include_recipe 'python::virtualenv'
+include_recipe 'supervisor'
+include_recipe 'tar'
 
 ['gstreamer1.0-plugins-bad', 'gstreamer1.0-plugins-base',
  'gstreamer1.0-plugins-good', 'gstreamer1.0-pulseaudio',
@@ -50,5 +52,64 @@ bash 'build-gstreamer-worker' do
     cd src
     KALDI_ROOT=#{node[:kaldi_asr][:kaldi_root]} make depend
     KALDI_ROOT=#{node[:kaldi_asr][:kaldi_root]} make
+  EOH
+end
+
+
+model_name = "#{node[:kaldi_asr][:model_name]}"
+model_url = "#{node[:kaldi_asr][:model_url]}"
+model_dir = "#{node[:kaldi_asr][:model_dir]}/#{model_name}"
+directory "#{model_dir}" do
+  recursive true
+  action :create
+end
+
+output_dir = "#{node[:kaldi_asr][:output_dir]}/#{model_name}"
+directory "#{output_dir}" do
+  recursive true
+  action :create
+end
+
+tar_extract model_url do
+  target_dir model_dir
+  creates "#{model_dir}/conf"
+end
+
+template "#{model_dir}/model.yaml" do
+  source "#{model_dir}/model.yaml.template"
+  local true
+  variables ({
+    :model_path => model_dir,
+    :output_path => output_dir,
+  })
+end
+
+template "#{model_dir}/conf/ivector_extractor.conf" do
+  source "#{model_dir}/conf/ivector_extractor.conf.template"
+  local true
+  variables ({
+    :model_path => model_dir,
+    :output_path => output_dir,
+  })
+  only_if 
+end
+
+virtualenv = node[:kaldi_asr][:gstreamer_server_root]
+gs_root = node[:kaldi_asr][:gstreamer_server_root]
+gs_port = node[:kaldi_asr][:gstreamer_server_port]
+
+supervisor_service "kaldi-gstreamer-worker-#{model_name}-supervisor" do
+  action [:enable, :start]
+  autostart true
+
+  environment 'LD_LIBRARY_PATH' => "#{node[:kaldi_asr][:kaldi_root]}/tools/openfst/lib",
+              'GST_PLUGIN_PATH' => "#{node[:kaldi_asr][:gstreamer_worker_root]}/src"
+
+  command <<-EOH
+    #{virtualenv}/bin/python \
+    #{gs_root}/kaldigstserver/worker.py \
+    -u ws://localhost:#{gs_port}/worker/ws/speech \
+    -f #{node[:kaldi_asr][:gstreamer_worker_nthread]} \
+    -c #{model_dir}/model.yaml
   EOH
 end
