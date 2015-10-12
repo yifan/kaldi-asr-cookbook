@@ -19,3 +19,7 @@ default['kaldi_asr']['model_name'] = 'test'
 default['kaldi_asr']['model_url'] = 'https://qcristore.blob.core.windows.net/public/asr/models/test_model.tar.gz'
 
 default['kaldi_asr']['with_gstreamer'] = true
+
+# a user account to run jobs and own files
+default['kaldi_asr']['user'] = 'asruser'
+default['kaldi_asr']['group'] = 'asruser'

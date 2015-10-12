@@ -56,15 +56,6 @@ if node[:kaldi_asr][:with_gstreamer]
   end
 end
 
-kaldi_version = node[:kaldi_asr][:kaldi_version]
-ark 'kaldi' do
-  url "https://github.com/yifan/kaldi/archive/v#{kaldi_version}.tar.gz"
-  version kaldi_version
-  checksum node[:kaldi_asr][:kaldi_checksum]
-  path '/opt'
-  home_dir node[:kaldi_asr][:kaldi_root]
-end
-
 # fix gfortran library problem with ubuntu 14.04
 link '/usr/lib/libgfortran.so' do
   owner 'root'
@@ -72,7 +63,25 @@ link '/usr/lib/libgfortran.so' do
   not_if 'test -L /usr/lib/libgfortran.so'
 end
 
+user node[:kaldi_asr][:user] do
+  comment 'user to run asr jobs and own directory'
+  system true
+  shell '/bin/false'
+  action :create
+end
+
+kaldi_version = node[:kaldi_asr][:kaldi_version]
+ark 'kaldi' do
+  owner node[:kaldi_asr][:user]
+  url "https://github.com/yifan/kaldi/archive/v#{kaldi_version}.tar.gz"
+  version kaldi_version
+  checksum node[:kaldi_asr][:kaldi_checksum]
+  path '/opt'
+  home_dir node[:kaldi_asr][:kaldi_root]
+end
+
 bash 'build-kaldi' do
+  user node[:kaldi_asr][:user]
   cwd node[:kaldi_asr][:kaldi_root]
   code <<-EOH
     cd tools
@@ -87,6 +96,7 @@ bash 'build-kaldi' do
 end
 
 bash 'build-kaldi-gstreamer' do
+  user node[:kaldi_asr][:user]
   only_if { node[:kaldi_asr][:with_gstreamer] == true }
   cwd node[:kaldi_asr][:kaldi_root]
   code 'cd src; make ext'

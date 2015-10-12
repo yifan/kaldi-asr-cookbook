@@ -34,6 +34,7 @@ end
 
 gw_version = node[:kaldi_asr][:gstreamer_worker_version]
 ark 'gstreamer-worker' do
+  owner node[:kaldi_asr][:user]
   url "https://github.com/yifan/gst-kaldi-nnet2-online/archive/v#{gw_version}.tar.gz"
   version gw_version
   checksum node[:kaldi_asr][:gstreamer_worker_checksum]
@@ -41,12 +42,8 @@ ark 'gstreamer-worker' do
   home_dir node[:kaldi_asr][:gstreamer_worker_root]
 end
 
-python_virtualenv "#{node[:kaldi_asr][:gstreamer_worker_root]}" do
-  options '--system-site-packages'
-  action :create
-end
-
 bash 'build-gstreamer-worker' do
+  user node[:kaldi_asr][:user]
   cwd node[:kaldi_asr][:gstreamer_worker_root]
   code <<-EOH
     cd src
@@ -55,28 +52,32 @@ bash 'build-gstreamer-worker' do
   EOH
 end
 
-
 model_name = "#{node[:kaldi_asr][:model_name]}"
 model_url = "#{node[:kaldi_asr][:model_url]}"
 model_dir = "#{node[:kaldi_asr][:model_dir]}/#{model_name}"
 directory "#{model_dir}" do
+  owner node[:kaldi_asr][:user]
   recursive true
   action :create
 end
 
 output_dir = "#{node[:kaldi_asr][:output_dir]}/#{model_name}"
 directory "#{output_dir}" do
+  owner node[:kaldi_asr][:user]
   recursive true
   action :create
 end
 
 tar_extract model_url do
+  user node[:kaldi_asr][:user]
+  download_dir model_dir
   target_dir model_dir
   creates "#{model_dir}/conf"
 end
 
 template "#{model_dir}/model.yaml" do
   source "#{model_dir}/model.yaml.template"
+  owner node[:kaldi_asr][:user]
   local true
   variables ({
     :model_path => model_dir,
@@ -86,6 +87,7 @@ end
 
 template "#{model_dir}/conf/ivector_extractor.conf" do
   source "#{model_dir}/conf/ivector_extractor.conf.template"
+  owner node[:kaldi_asr][:user]
   local true
   variables ({
     :model_path => model_dir,
@@ -99,6 +101,7 @@ gs_root = node[:kaldi_asr][:gstreamer_server_root]
 gs_port = node[:kaldi_asr][:gstreamer_server_port]
 
 supervisor_service "kaldi-gstreamer-worker-#{model_name}-supervisor" do
+  user node[:kaldi_asr][:user]
   action [:enable, :start]
   autostart true
 

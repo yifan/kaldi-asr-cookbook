@@ -27,6 +27,7 @@ package 'python-gobject'
 
 gs_version = node[:kaldi_asr][:gstreamer_server_version]
 ark 'kaldi-gstreamer-server' do
+  owner node[:kaldi_asr][:user]
   url "https://github.com/yifan/kaldi-gstreamer-server/archive/v#{gs_version}.tar.gz"
   version gs_version
   checksum node[:kaldi_asr][:gstreamer_server_checksum]
@@ -35,17 +36,20 @@ ark 'kaldi-gstreamer-server' do
 end
 
 python_virtualenv "#{node[:kaldi_asr][:gstreamer_server_root]}" do
+  owner node[:kaldi_asr][:user]
   options '--system-site-packages'
   action :create
 end
 
 python_pip 'ws4py' do
+  user node[:kaldi_asr][:user]
   version '0.3.2'
   virtualenv node[:kaldi_asr][:gstreamer_server_root]
 end
 
 ['pyyaml', 'tornado'].each do |python_module|
   python_pip python_module do
+    user node[:kaldi_asr][:user]
     virtualenv node[:kaldi_asr][:gstreamer_server_root]
   end
 end
@@ -53,6 +57,7 @@ end
 virtualenv = node[:kaldi_asr][:gstreamer_server_root]
 gs_root = node[:kaldi_asr][:gstreamer_server_root]
 supervisor_service 'kaldi-gstreamer-server-supervisor' do
+  user node[:kaldi_asr][:user]
   action [:enable, :start]
   autostart true
   command <<-EOH
