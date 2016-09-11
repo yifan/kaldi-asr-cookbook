@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: kaldi-asr
-# Recipe:: source
+# Recipe:: kaldi
 # Author:: Yifan Zhang (<yzhang@qf.org.qa>)
 #
 # Copyright (C) 2015 Qatar Computing Research Institute
@@ -80,19 +80,29 @@ ark 'kaldi' do
   home_dir node[:kaldi_asr][:kaldi_root]
 end
 
-bash 'build-kaldi' do
+bash 'build-kaldi-tools' do
   user node[:kaldi_asr][:user]
   cwd node[:kaldi_asr][:kaldi_root]
   code <<-EOH
     cd tools
     make
-    cd ../src
+  EOH
+  action :run
+  not_if "test -e #{node[:kaldi_asr][:kaldi_root]}/tools/openfst"
+end
+
+bash 'build-kaldi-src' do
+  user node[:kaldi_asr][:user]
+  cwd node[:kaldi_asr][:kaldi_root]
+  timeout 7200
+  code <<-EOH
+    cd src
     ./configure --shared
     make depend
     make
+    touch #{node[:kaldi_asr][:kaldi_root]}/src/done
     EOH
   action :run
-  not_if "test -d #{node[:kaldi_asr][:kaldi_root]}/src/lib"
 end
 
 bash 'build-kaldi-gstreamer' do

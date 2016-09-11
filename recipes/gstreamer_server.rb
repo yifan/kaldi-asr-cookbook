@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-include_recipe 'kaldi-asr::source'
+include_recipe 'kaldi-asr::kaldi'
 include_recipe 'python'
 include_recipe 'python::pip'
 include_recipe 'python::virtualenv'

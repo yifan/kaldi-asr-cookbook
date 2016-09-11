@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-include_recipe 'kaldi-asr::source'
+include_recipe 'kaldi-asr::kaldi'
 include_recipe 'python'
 include_recipe 'python::pip'
 include_recipe 'python::virtualenv'
@@ -50,6 +50,7 @@ bash 'build-gstreamer-worker' do
     KALDI_ROOT=#{node[:kaldi_asr][:kaldi_root]} make depend
     KALDI_ROOT=#{node[:kaldi_asr][:kaldi_root]} make
   EOH
+  not_if "test -e #{node[:kaldi_asr][:gstreamer_worker_root]}/src/libgstkaldionline2.so"
 end
 
 model_name = "#{node[:kaldi_asr][:model_name]}"
@@ -93,7 +94,6 @@ template "#{model_dir}/conf/ivector_extractor.conf" do
     :model_path => model_dir,
     :output_path => output_dir,
   })
-  only_if 
 end
 
 virtualenv = node[:kaldi_asr][:gstreamer_server_root]

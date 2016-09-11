@@ -26,7 +26,7 @@ Ubuntu 14.04
 
 This section describes the recipes in the bookbook and how to use them in your environment. These recipes will not use official repositories for KALDI and other components. It will use my own fork so that it will only need to download a faction of the data comparing to checking out full repository.
 
-### source
+### kaldi
 
 Checkout KALDI from my fork on github and compile everything.
 
