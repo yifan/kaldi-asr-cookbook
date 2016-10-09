@@ -28,10 +28,9 @@ package 'python-gobject'
 gs_version = node[:kaldi_asr][:gstreamer_server_version]
 ark 'kaldi-gstreamer-server' do
   owner node[:kaldi_asr][:user]
-  url "https://github.com/yifan/kaldi-gstreamer-server/archive/v#{gs_version}.tar.gz"
+  url node[:kaldi_asr][:gstreamer_server_package_url]
   version gs_version
   checksum node[:kaldi_asr][:gstreamer_server_checksum]
-  path '/opt'
   home_dir node[:kaldi_asr][:gstreamer_server_root]
 end
 

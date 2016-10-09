@@ -86,6 +86,7 @@ bash 'build-kaldi-tools' do
   code <<-EOH
     cd tools
     make
+    chmod a+xrw /opt/kaldi/tools/openfst-*
   EOH
   action :run
   not_if "test -e #{node[:kaldi_asr][:kaldi_root]}/tools/openfst"
@@ -103,6 +104,7 @@ bash 'build-kaldi-src' do
     touch #{node[:kaldi_asr][:kaldi_root]}/src/done
     EOH
   action :run
+  not_if "test -e #{node[:kaldi_asr][:kaldi_root]}/src/done"
 end
 
 bash 'build-kaldi-gstreamer' do

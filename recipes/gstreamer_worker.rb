@@ -26,7 +26,7 @@ include_recipe 'tar'
 ['gstreamer1.0-plugins-bad', 'gstreamer1.0-plugins-base',
  'gstreamer1.0-plugins-good', 'gstreamer1.0-pulseaudio',
  'gstreamer1.0-plugins-ugly', 'gstreamer1.0-tools',
- 'libgstreamer1.0-dev'].each do |package_name|
+ 'libgstreamer1.0-dev', 'libjansson-dev'].each do |package_name|
   package package_name do
     retries 3
   end
@@ -74,6 +74,7 @@ tar_extract model_url do
   download_dir model_dir
   target_dir model_dir
   creates "#{model_dir}/conf"
+  not_if "test -e #{model_dir}/model.yaml"
 end
 
 template "#{model_dir}/model.yaml" do
@@ -84,6 +85,7 @@ template "#{model_dir}/model.yaml" do
     :model_path => model_dir,
     :output_path => output_dir,
   })
+  not_if "test -e #{model_dir}/model.yaml"
 end
 
 template "#{model_dir}/conf/ivector_extractor.conf" do
@@ -94,19 +96,22 @@ template "#{model_dir}/conf/ivector_extractor.conf" do
     :model_path => model_dir,
     :output_path => output_dir,
   })
+  only_if "test -e #{model_dir}/conf/ivector_extractor.conf.template"
+  not_if "test -e #{model_dir}/conf/ivector_extractor.conf"
 end
 
 virtualenv = node[:kaldi_asr][:gstreamer_server_root]
 gs_root = node[:kaldi_asr][:gstreamer_server_root]
 gs_port = node[:kaldi_asr][:gstreamer_server_port]
 
-supervisor_service "kaldi-gstreamer-worker-#{model_name}-supervisor" do
+supervisor_service "kaldi-gstreamer-worker-supervisor" do
   user node[:kaldi_asr][:user]
   action [:enable, :start]
   autostart true
 
   environment 'LD_LIBRARY_PATH' => "#{node[:kaldi_asr][:kaldi_root]}/tools/openfst/lib",
-              'GST_PLUGIN_PATH' => "#{node[:kaldi_asr][:gstreamer_worker_root]}/src"
+              'GST_PLUGIN_PATH' => "#{node[:kaldi_asr][:gstreamer_worker_root]}/src",
+              'GST_DEBUG' => "kaldinnet2onlinedecoder:3"
 
   command <<-EOH
     #{virtualenv}/bin/python \
