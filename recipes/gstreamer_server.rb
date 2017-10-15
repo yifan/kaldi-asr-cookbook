@@ -55,13 +55,17 @@ end
 
 virtualenv = node[:kaldi_asr][:gstreamer_server_root]
 gs_root = node[:kaldi_asr][:gstreamer_server_root]
+gs_params = node[:kaldi_asr][:gstreamer_server_params]
 supervisor_service 'kaldi-gstreamer-server-supervisor' do
   user node[:kaldi_asr][:user]
-  action [:enable, :start]
+  action [:enable]
   autostart true
+  autorestart true
   command <<-EOH
     #{virtualenv}/bin/python \
     #{gs_root}/kaldigstserver/master_server.py \
+    #{gs_params} \
     --port=#{node[:kaldi_asr][:gstreamer_server_port]}
   EOH
+  not_if "#{node[:kaldi_asr][:gstreamer_server_disabled]}"
 end

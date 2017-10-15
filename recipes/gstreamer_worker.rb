@@ -116,7 +116,7 @@ supervisor_service "kaldi-gstreamer-worker-supervisor" do
   command <<-EOH
     #{virtualenv}/bin/python \
     #{gs_root}/kaldigstserver/worker.py \
-    -u ws://localhost:#{gs_port}/worker/ws/speech \
+    -u ws://#{node[:kaldi_asr][:gstreamer_server_ip]}:#{gs_port}/worker/ws/speech \
     -f #{node[:kaldi_asr][:gstreamer_worker_nthread]} \
     -c #{model_dir}/model.yaml
   EOH

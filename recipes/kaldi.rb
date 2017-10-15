@@ -28,11 +28,11 @@ end
 
 # gcc 4.8.2 has a bug. for kaldi to work, we need to upgrade it
 if "test $(gcc --version | head -1 | awk '{print $NF;}') = '4.8.2'"
-  apt_repository 'ubuntu-toolchain' do
-    uri 'ppa:ubuntu-toolchain-r/test'
-    components ['main']
-    distribution 'trusty'
-  end
+  #apt_repository 'ubuntu-toolchain' do
+  #  uri 'ppa:ubuntu-toolchain-r/test'
+  #  components ['main']
+  #  distribution 'trusty'
+  #end
   ['gcc-4.9', 'g++-4.9'].each do |gcc_package|
     package gcc_package do
       action :install
