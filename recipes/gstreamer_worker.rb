@@ -17,9 +17,9 @@
 #
 
 include_recipe 'kaldi-asr::kaldi'
-include_recipe 'python'
-include_recipe 'python::pip'
-include_recipe 'python::virtualenv'
+include_recipe 'poise-python'
+include_recipe 'poise-python::pip'
+include_recipe 'poise-python::virtualenv'
 include_recipe 'supervisor'
 include_recipe 'tar'
 

@@ -16,10 +16,8 @@
 # limitations under the License.
 #
 
-include_recipe 'kaldi-asr::kaldi'
-include_recipe 'python'
-include_recipe 'python::pip'
-include_recipe 'python::virtualenv'
+#include_recipe 'kaldi-asr::kaldi'
+include_recipe 'poise-python'
 include_recipe 'supervisor'
 include_recipe 'ark'
 
@@ -34,24 +32,17 @@ ark 'kaldi-gstreamer-server' do
   home_dir node[:kaldi_asr][:gstreamer_server_root]
 end
 
+python_runtime '2' do
+  provider :system
+end
+
 python_virtualenv "#{node[:kaldi_asr][:gstreamer_server_root]}" do
-  owner node[:kaldi_asr][:user]
-  options '--system-site-packages'
+  user node[:kaldi_asr][:user]
+  system_site_packages true
   action :create
 end
 
-python_pip 'ws4py' do
-  user node[:kaldi_asr][:user]
-  version '0.3.2'
-  virtualenv node[:kaldi_asr][:gstreamer_server_root]
-end
-
-['pyyaml', 'tornado'].each do |python_module|
-  python_pip python_module do
-    user node[:kaldi_asr][:user]
-    virtualenv node[:kaldi_asr][:gstreamer_server_root]
-  end
-end
+pip_requirements "#{node[:kaldi_asr][:gstreamer_server_root]}/requirements.txt"
 
 virtualenv = node[:kaldi_asr][:gstreamer_server_root]
 gs_root = node[:kaldi_asr][:gstreamer_server_root]
