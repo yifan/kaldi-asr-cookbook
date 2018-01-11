@@ -10,6 +10,9 @@ supports 'ubuntu', ">= 14.04"
 
 depends 'poise-python'
 depends 'supervisor'
+depends 'le-certbot'
+depends 'nginx'
+depends 'git'
 depends 'ark'
 depends 'apt'
 depends 'tar'

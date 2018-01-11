@@ -16,35 +16,23 @@
 # limitations under the License.
 #
 
-#include_recipe 'kaldi-asr::kaldi'
 include_recipe 'poise-python'
 include_recipe 'supervisor'
+include_recipe 'git'
 include_recipe 'ark'
 
 package 'python-gobject'
 
-gs_version = node[:kaldi_asr][:gstreamer_server_version]
-ark 'kaldi-gstreamer-server' do
-  owner node[:kaldi_asr][:user]
-  url node[:kaldi_asr][:gstreamer_server_package_url]
-  version gs_version
-  checksum node[:kaldi_asr][:gstreamer_server_checksum]
-  home_dir node[:kaldi_asr][:gstreamer_server_root]
+git "#{node[:kaldi_asr][:gstreamer_server_root]}" do
+  repository 'https://github.com/yifan/kaldi-gstreamer-server.git'
+  revision 'bf0b35fb857799fb4aebe99a905458f1e53a9f98'
+  depth 1
 end
 
-python_runtime '2' do
-  provider :system
-end
+python_virtualenv '/opt/env'
+pip_requirements "#{node[:kaldi_asr][:gstreamer_server_root]}"
 
-python_virtualenv "#{node[:kaldi_asr][:gstreamer_server_root]}" do
-  user node[:kaldi_asr][:user]
-  system_site_packages true
-  action :create
-end
-
-pip_requirements "#{node[:kaldi_asr][:gstreamer_server_root]}/requirements.txt"
-
-virtualenv = node[:kaldi_asr][:gstreamer_server_root]
+virtualenv = '/opt/env'
 gs_root = node[:kaldi_asr][:gstreamer_server_root]
 gs_params = node[:kaldi_asr][:gstreamer_server_params]
 supervisor_service 'kaldi-gstreamer-server-supervisor' do
@@ -60,3 +48,4 @@ supervisor_service 'kaldi-gstreamer-server-supervisor' do
   EOH
   not_if "#{node[:kaldi_asr][:gstreamer_server_disabled]}"
 end
+
