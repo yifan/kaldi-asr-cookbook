@@ -29,14 +29,16 @@ git "#{node[:kaldi_asr][:gstreamer_server_root]}" do
   depth 1
 end
 
-python_virtualenv '/opt/env'
+python_virtualenv '/opt/env' do
+  system_site_packages true
+end
+
 pip_requirements "#{node[:kaldi_asr][:gstreamer_server_root]}"
 
 virtualenv = '/opt/env'
 gs_root = node[:kaldi_asr][:gstreamer_server_root]
 gs_params = node[:kaldi_asr][:gstreamer_server_params]
 supervisor_service 'kaldi-gstreamer-server-supervisor' do
-  user node[:kaldi_asr][:user]
   action [:enable]
   autostart true
   autorestart true
