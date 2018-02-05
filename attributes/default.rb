@@ -5,19 +5,16 @@ default['kaldi_asr']['kaldi_root'] = '/opt/kaldi'
 default['kaldi_asr']['model_dir'] = '/opt/model'
 default['kaldi_asr']['output_dir'] = '/var/spool/asr'
 
-default['kaldi_asr']['gstreamer_server_version'] = '0.1.15'
-default['kaldi_asr']['gstreamer_server_package_url'] =   "https://github.com/yifan/kaldi-gstreamer-server/archive/v#{default[:kaldi_asr][:gstreamer_server_version]}.tar.gz"
-default['kaldi_asr']['gstreamer_server_checksum'] = '2bf0be5d515eaf0d9a8b9b9fe7c89c7aed6aa440dda84616cca3a959ffaea781'
 default['kaldi_asr']['gstreamer_server_root'] = '/opt/kaldi-gstreamer-server'
 default['kaldi_asr']['gstreamer_server_ip'] = 'localhost'
 default['kaldi_asr']['gstreamer_server_port'] = '8888'
-default['kaldi_asr']['gstreamer_server_params'] = ''
 default['kaldi_asr']['gstreamer_server_disabled'] = false
 
 default['kaldi_asr']['gstreamer_worker_version'] = '0.2.5'
 default['kaldi_asr']['gstreamer_worker_checksum'] = '88e3e8e7b75cd7edaa83f97d72dbf740de6cdd986ca5467ccb3a3fc0103214cd'
 default['kaldi_asr']['gstreamer_worker_root'] = '/opt/kaldi-gstreamer-worker'
 default['kaldi_asr']['gstreamer_worker_nthread'] = 1
+default['kaldi_asr']['gstreamer_worker_lang'] = 'none'
 
 default['kaldi_asr']['model_name'] = 'arabic'
 default['kaldi_asr']['model_url'] = 'https://qcristore.blob.core.windows.net/public/asr/models/arabic.tar.gz'

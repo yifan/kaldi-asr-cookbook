@@ -17,9 +17,6 @@
 #
 
 include_recipe 'kaldi-asr::kaldi'
-include_recipe 'poise-python'
-include_recipe 'poise-python::pip'
-include_recipe 'poise-python::virtualenv'
 include_recipe 'supervisor'
 include_recipe 'tar'
 
@@ -100,9 +97,10 @@ template "#{model_dir}/conf/ivector_extractor.conf" do
   not_if "test -e #{model_dir}/conf/ivector_extractor.conf"
 end
 
-virtualenv = node[:kaldi_asr][:gstreamer_server_root]
+virtualenv = "/opt/env"
 gs_root = node[:kaldi_asr][:gstreamer_server_root]
 gs_port = node[:kaldi_asr][:gstreamer_server_port]
+lang = node[:kaldi_asr][:gstreamer_worker_lang]
 
 supervisor_service "kaldi-gstreamer-worker-supervisor" do
   user node[:kaldi_asr][:user]
@@ -116,7 +114,7 @@ supervisor_service "kaldi-gstreamer-worker-supervisor" do
   command <<-EOH
     #{virtualenv}/bin/python \
     #{gs_root}/kaldigstserver/worker.py \
-    -u ws://#{node[:kaldi_asr][:gstreamer_server_ip]}:#{gs_port}/worker/ws/speech \
+    -u ws://#{node[:kaldi_asr][:gstreamer_server_ip]}:#{gs_port}/worker/ws/speech&lang=#{lang} \
     -f #{node[:kaldi_asr][:gstreamer_worker_nthread]} \
     -c #{model_dir}/model.yaml
   EOH
